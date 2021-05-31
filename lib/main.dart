@@ -12,57 +12,42 @@ void main() {
 }
 
 class HomePage extends StatefulWidget {
+  const HomePage({Key? key}) : super(key: key);
+
   @override
   _HomePageState createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
+  final List<Widget> pages = <Widget>[
+    Container(
+      key: PageStorageKey<String>('page1'),
+      alignment: Alignment.center,
+      child: Text('Home Page', style: TextStyle(fontSize: 36.0)),
+    ),
+    ListView.builder(
+      key: PageStorageKey<String>('page2list'),
+      padding: EdgeInsets.all(0),
+      itemCount: 1000,
+      itemBuilder: (BuildContext context, int index) => Container(
+        height: 50.0,
+        color: Colors.amber[300],
+        child: Center(child: Text('Entry $index')),
+      ),
+    ),
+    Container(
+      key: PageStorageKey<String>('page3'),
+      alignment: Alignment.center,
+      child: Text('Create Line', style: TextStyle(fontSize: 36.0)),
+    ),
+    Container(
+      key: PageStorageKey<String>('page4'),
+      alignment: Alignment.center,
+      child: Text('Settings', style: TextStyle(fontSize: 36.0)),
+    ),
+  ];
   int _selectedIndex = 0;
-  final List<String> entries = <String>[
-    'A',
-    'B',
-    'C',
-    'E',
-    'F',
-    'G',
-    'H',
-    'I',
-    'J',
-    'K'
-  ];
-  final List<int> colorCodes = <int>[
-    50,
-    100,
-    200,
-    300,
-    400,
-    500,
-    600,
-    700,
-    800,
-    900
-  ];
-
-  Widget _selectPage(int pageNumber) {
-    switch (pageNumber) {
-      case 0:
-        return Container();
-      case 1:
-        return ListView.builder(
-            key: ValueKey('page2list'),
-            padding: const EdgeInsets.all(0),
-            itemCount: entries.length,
-            itemBuilder: (BuildContext context, int index) {
-              return Container(
-                height: 50,
-                color: Colors.amber[colorCodes[index]],
-                child: Center(child: Text('Entry ${entries[index]}')),
-              );
-            });
-      default:
-        return Container();
-    }
-  }
+  final PageStorageBucket _bucket = PageStorageBucket();
 
   @override
   Widget build(BuildContext context) {
@@ -71,7 +56,10 @@ class _HomePageState extends State<HomePage> {
         children: <Widget>[
           TopBar(),
           Expanded(
-            child: _selectPage(_selectedIndex),
+            child: PageStorage(
+              child: pages[_selectedIndex],
+              bucket: _bucket,
+            ),
           ),
           NavigationBar(
             currentIndex: _selectedIndex,
