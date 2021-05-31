@@ -1,84 +1,106 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 /// Class for the user interface component.
 class UserInterface {
-  void start() => runApp(_App());
-}
-
-class _App extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
+  void start() {
+    runApp(MaterialApp(
       title: 'Line Prototype',
       theme: ThemeData(
         primaryColor: Colors.indigo[300],
       ),
-      home: _HomePage(),
-      debugShowCheckedModeBanner: false,
-    );
+      home: _TopPage(),
+    ));
   }
 }
 
-class _HomePage extends StatefulWidget {
-  const _HomePage({Key? key}) : super(key: key);
+class _TopPage extends StatefulWidget {
+  const _TopPage({Key? key}) : super(key: key);
 
   @override
-  _HomePageState createState() => _HomePageState();
+  _TopPageState createState() => _TopPageState();
 }
 
-class _HomePageState extends State<_HomePage> {
+class _TopPageState extends State<_TopPage> {
   final List<Widget> pages = <Widget>[
-    Container(
-      key: PageStorageKey<String>('page1'),
-      alignment: Alignment.center,
-      child: Text('Home Page', style: TextStyle(fontSize: 36.0)),
-    ),
-    ListView.builder(
-      key: PageStorageKey<String>('page2list'),
-      padding: EdgeInsets.all(0),
-      itemCount: 1000,
-      itemBuilder: (BuildContext context, int index) => Container(
-        height: 50.0,
-        color: Colors.amber[300],
-        child: Center(child: Text('Entry $index')),
-      ),
-    ),
-    Container(
-      key: PageStorageKey<String>('page3'),
-      alignment: Alignment.center,
-      child: Text('Create Line', style: TextStyle(fontSize: 36.0)),
-    ),
-    Container(
-      key: PageStorageKey<String>('page4'),
-      alignment: Alignment.center,
-      child: Text('Settings', style: TextStyle(fontSize: 36.0)),
-    ),
+    _HomePage(),
+    _ScannerPage(),
+    _CreatePage(),
+    _SettingsPage(),
   ];
-  int _selectedIndex = 0;
+  int _pageNumber = 0;
   final PageStorageBucket _bucket = PageStorageBucket();
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
+
     return Material(
       child: Column(
         children: <Widget>[
           _TopBar(),
           Expanded(
-            child: PageStorage(
-              child: pages[_selectedIndex],
-              bucket: _bucket,
-            ),
+            child: PageStorage(child: pages[_pageNumber], bucket: _bucket),
           ),
           _NavigationBar(
-            currentIndex: _selectedIndex,
+            currentIndex: _pageNumber,
             onTap: (index) {
               setState(() {
-                _selectedIndex = index;
+                _pageNumber = index;
               });
             },
           ),
         ],
       ),
+    );
+  }
+}
+
+class _HomePage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      key: PageStorageKey<String>('page1'),
+      alignment: Alignment.center,
+      child: Text('Home Page', style: TextStyle(fontSize: 36.0)),
+    );
+  }
+}
+
+class _ScannerPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      key: PageStorageKey<String>('page2list'),
+      padding: EdgeInsets.all(0),
+      itemCount: 10000,
+      itemBuilder: (BuildContext context, int index) => Container(
+        height: 50.0,
+        color: Colors.amber[(index % 9 + 1) * 100],
+        child: Center(child: Text('Entry $index')),
+      ),
+    );
+  }
+}
+
+class _CreatePage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      key: PageStorageKey<String>('page3'),
+      alignment: Alignment.center,
+      child: Text('Create Line', style: TextStyle(fontSize: 36.0)),
+    );
+  }
+}
+
+class _SettingsPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      key: PageStorageKey<String>('page4'),
+      alignment: Alignment.center,
+      child: Text('Settings', style: TextStyle(fontSize: 36.0)),
     );
   }
 }
