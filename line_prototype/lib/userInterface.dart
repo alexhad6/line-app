@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+/// Class for the user interface component.
 class UserInterface {
   void start() => runApp(_App());
 }
