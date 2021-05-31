@@ -18,6 +18,51 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
+  final List<String> entries = <String>[
+    'A',
+    'B',
+    'C',
+    'E',
+    'F',
+    'G',
+    'H',
+    'I',
+    'J',
+    'K'
+  ];
+  final List<int> colorCodes = <int>[
+    50,
+    100,
+    200,
+    300,
+    400,
+    500,
+    600,
+    700,
+    800,
+    900
+  ];
+
+  Widget _selectPage(int pageNumber) {
+    switch (pageNumber) {
+      case 0:
+        return Container();
+      case 1:
+        return ListView.builder(
+            key: ValueKey('page2list'),
+            padding: const EdgeInsets.all(0),
+            itemCount: entries.length,
+            itemBuilder: (BuildContext context, int index) {
+              return Container(
+                height: 50,
+                color: Colors.amber[colorCodes[index]],
+                child: Center(child: Text('Entry ${entries[index]}')),
+              );
+            });
+      default:
+        return Container();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,9 +71,7 @@ class _HomePageState extends State<HomePage> {
         children: <Widget>[
           TopBar(),
           Expanded(
-            child: Center(
-              child: Text('Page ${_selectedIndex + 1}'),
-            ),
+            child: _selectPage(_selectedIndex),
           ),
           NavigationBar(
             currentIndex: _selectedIndex,
@@ -86,11 +129,19 @@ class NavigationBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final double _safePaddingBottom = MediaQuery.of(context).padding.bottom;
+    final double iconSize = 30.0;
 
-    const List<IconData> icons = [
+    const List<IconData> unselectedIcons = [
+      Icons.home_outlined,
+      Icons.qr_code_scanner_outlined,
+      Icons.add_circle_outline,
+      Icons.settings_outlined,
+    ];
+
+    const List<IconData> selectedIcons = [
       Icons.home,
-      Icons.account_circle,
-      Icons.view_list,
+      Icons.qr_code_scanner,
+      Icons.add_circle,
       Icons.settings,
     ];
 
@@ -98,7 +149,7 @@ class NavigationBar extends StatelessWidget {
       color: Theme.of(context).primaryColor,
       child: Row(
         children: [
-          for (var index = 0; index < icons.length; index++)
+          for (var index = 0; index < unselectedIcons.length; index++)
             Expanded(
               child: GestureDetector(
                 behavior: HitTestBehavior.translucent,
@@ -109,8 +160,11 @@ class NavigationBar extends StatelessWidget {
                         _safePaddingBottom == 0 ? padding : _safePaddingBottom,
                   ),
                   child: Icon(
-                    icons[index],
+                    index == currentIndex
+                        ? selectedIcons[index]
+                        : unselectedIcons[index],
                     color: index == currentIndex ? Colors.white : Colors.black,
+                    size: iconSize,
                   ),
                 ),
                 onTap: () => onTap(index),
