@@ -3,20 +3,74 @@ import 'package:flutter/services.dart';
 
 /// Class for the user interface component.
 class UserInterface {
-  void start() {
-    runApp(MaterialApp(
+  UserInterface._();
+
+  static final UserInterface instance = UserInterface._();
+
+  void start(Future<void> Function() load) {
+    WidgetsFlutterBinding.ensureInitialized();
+    runApp(_App(load: load()));
+  }
+}
+
+class _App extends StatefulWidget {
+  const _App({Key? key, required Future<void> load})
+      : _load = load,
+        super(key: key);
+
+  final Future<void> _load;
+
+  @override
+  _AppState createState() => _AppState();
+}
+
+class _AppState extends State<_App> {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
       title: 'Line Prototype',
       theme: ThemeData(
         primaryColor: Colors.indigo[300],
       ),
-      home: _TopPage(),
-    ));
+      home: FutureBuilder(
+        future: widget._load,
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return _Error();
+          }
+          if (snapshot.connectionState == ConnectionState.done) {
+            return _TopPage();
+          }
+          return _Loading();
+        },
+      ),
+    );
+  }
+}
+
+class _Error extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      child: Center(
+        child: Text('Error :('),
+      ),
+    );
+  }
+}
+
+class _Loading extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      child: Center(
+        child: Text('Loading...'),
+      ),
+    );
   }
 }
 
 class _TopPage extends StatefulWidget {
-  const _TopPage({Key? key}) : super(key: key);
-
   @override
   _TopPageState createState() => _TopPageState();
 }
@@ -62,7 +116,9 @@ class _HomePage extends StatelessWidget {
     return Container(
       key: PageStorageKey<String>('page1'),
       alignment: Alignment.center,
-      child: Text('Home Page', style: TextStyle(fontSize: 36.0)),
+      child: TextField(
+        decoration: null,
+      ),
     );
   }
 }
@@ -110,7 +166,7 @@ class _TopBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final double _safePaddingTop = MediaQuery.of(context).padding.top;
+    final double _safePaddingTop = MediaQuery.of(context).viewPadding.top;
 
     return Container(
       color: Theme.of(context).primaryColor,
@@ -146,7 +202,7 @@ class _NavigationBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final double _safePaddingBottom = MediaQuery.of(context).padding.bottom;
+    final double _safePaddingBottom = MediaQuery.of(context).viewPadding.bottom;
     final double iconSize = 30.0;
 
     const List<IconData> unselectedIcons = [
