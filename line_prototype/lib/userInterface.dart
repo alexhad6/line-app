@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import 'package:line_prototype/database.dart';
+
+final database = Database.instance;
+
 /// Class for the user interface component.
 class UserInterface {
   UserInterface._();
@@ -78,7 +82,7 @@ class _TopPage extends StatefulWidget {
 class _TopPageState extends State<_TopPage> {
   final List<Widget> pages = <Widget>[
     _HomePage(),
-    _ScannerPage(),
+    _ScannerPage(key: PageStorageKey<String>('scannerPage')),
     _CreatePage(),
     _SettingsPage(),
   ];
@@ -94,7 +98,10 @@ class _TopPageState extends State<_TopPage> {
         children: <Widget>[
           _TopBar(),
           Expanded(
-            child: PageStorage(child: pages[_pageNumber], bucket: _bucket),
+            child: PageStorage(
+              child: pages[_pageNumber],
+              bucket: _bucket,
+            ),
           ),
           _NavigationBar(
             currentIndex: _pageNumber,
@@ -111,23 +118,23 @@ class _TopPageState extends State<_TopPage> {
 }
 
 class _HomePage extends StatelessWidget {
+  const _HomePage({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Container(
-      key: PageStorageKey<String>('page1'),
       alignment: Alignment.center,
-      child: TextField(
-        decoration: null,
-      ),
+      child: Text('Home Page', style: TextStyle(fontSize: 36.0)),
     );
   }
 }
 
 class _ScannerPage extends StatelessWidget {
+  const _ScannerPage({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-      key: PageStorageKey<String>('page2list'),
       padding: EdgeInsets.all(0),
       itemCount: 10000,
       itemBuilder: (BuildContext context, int index) => Container(
@@ -140,21 +147,43 @@ class _ScannerPage extends StatelessWidget {
 }
 
 class _CreatePage extends StatelessWidget {
+  const _CreatePage({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Container(
-      key: PageStorageKey<String>('page3'),
       alignment: Alignment.center,
-      child: Text('Create Line', style: TextStyle(fontSize: 36.0)),
+      child: Padding(
+        padding: EdgeInsets.all(10),
+        child: Column(
+          children: <Widget>[
+            Spacer(),
+            Text('Create Line', style: TextStyle(fontSize: 36.0)),
+            Spacer(flex: 10),
+            Text('Enter line name below: '),
+            TextField(
+              onSubmitted: (String lineName) async {
+                await database.addLine(
+                  lineName: lineName,
+                  people: [],
+                  waitTime: 0,
+                );
+              },
+            ),
+            Spacer(flex: 10),
+          ],
+        ),
+      ),
     );
   }
 }
 
 class _SettingsPage extends StatelessWidget {
+  const _SettingsPage({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Container(
-      key: PageStorageKey<String>('page4'),
       alignment: Alignment.center,
       child: Text('Settings', style: TextStyle(fontSize: 36.0)),
     );
@@ -162,6 +191,8 @@ class _SettingsPage extends StatelessWidget {
 }
 
 class _TopBar extends StatelessWidget {
+  const _TopBar({Key? key}) : super(key: key);
+
   final double padding = 12.0;
 
   @override

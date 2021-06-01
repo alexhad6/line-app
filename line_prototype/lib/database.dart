@@ -11,14 +11,18 @@ class Database {
   }
 
   Future<void> addLine({
-    required String address,
+    required String lineName,
+    required List<String> people,
     required int waitTime,
   }) async {
+    final data = <String, Object>{
+      'lineName': lineName,
+      'people': people,
+      'waitTime': waitTime,
+    };
+
     try {
-      await _lines.add({
-        'address': address,
-        'time': waitTime,
-      });
+      await _lines.add(data);
       print('Line added');
     } catch (e) {
       print('Error $e');
