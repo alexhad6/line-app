@@ -1,16 +1,3 @@
 # line_prototype
 
-A new Flutter project.
-
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+This is a prototype of Line built in Flutter. So far, we have developed initial versions of the User Interface and Database components. The prototype is currently able to display a basic user interface and connect with [Cloud Firestore](https://firebase.google.com/products/firestore).
