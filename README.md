@@ -8,4 +8,3 @@ So far, we have developed the concept for the app and done some initial prototyp
 
 ## Contents
 * [line_prototype](line_prototype): App prototype built in Flutter
-* [planning](planning): Requirements, architecture, and component designs
