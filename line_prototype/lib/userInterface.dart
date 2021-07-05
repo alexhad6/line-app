@@ -199,6 +199,11 @@ class _TopBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final double _safePaddingTop = MediaQuery.of(context).viewPadding.top;
 
+    print('Top: ${MediaQuery.of(context).viewPadding.top}');
+    print('Bottom: ${MediaQuery.of(context).viewPadding.bottom}');
+    print('Left: ${MediaQuery.of(context).viewPadding.left}');
+    print('Righjt: ${MediaQuery.of(context).viewPadding.right}');
+
     return Container(
       color: Theme.of(context).primaryColor,
       padding: EdgeInsets.only(
